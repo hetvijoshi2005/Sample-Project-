@@ -1,0 +1,29 @@
+# --- 1. IGNORE DATASETS (Crucial) ---
+dataset/
+Cars_and_Food_Merged_Dataset/
+# Ignore any other large data folders
+data/
+
+# --- 2. IGNORE FULL INDEXES ---
+# We don't want these on GitHub because they require the full dataset to work
+search_index_v2.pkl
+search_index.pkl
+
+# --- 3. IGNORE ENVIRONMENT & SYSTEM FILES ---
+env/
+venv/
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+.vscode/
+
+# --- 4. IGNORE LARGE ARCHIVES ---
+*.zip
+*.rar
+*.tar.gz
+deep_learning_model.zip
+
+# --- 5. IGNORE NOTEBOOKS (Optional) ---
+# You can keep them if you want, but they clutter the repo
+*.ipynb
