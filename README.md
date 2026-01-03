@@ -1,8 +1,13 @@
 # 🍔🏎️ AI Similarity Search: Cars & Food
 
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://ai-visual-search-deepmistry.streamlit.app)
+[![Kaggle Dataset](https://img.shields.io/badge/Kaggle-Dataset-blue.svg)](https://www.kaggle.com/datasets/deep1705/stanford-cars-and-food-101-merged-dataset)
+[![Python](https://img.shields.io/badge/Python-3.9%2B-yellow.svg)](https://www.python.org/)
+[![TensorFlow](https://img.shields.io/badge/TensorFlow-2.x-orange.svg)](https://www.tensorflow.org/)
+
 **An End-to-End Deep Learning Search Engine** capable of finding visually similar images across two distinct domains: Cars and Food.
 
-**[🔴 LIVE DEMO LINK HERE - Paste your Streamlit Share link later]**
+**🔴 [Click Here to Try the Live Demo](https://ai-visual-search-deepmistry.streamlit.app)**
 
 ---
 
@@ -31,19 +36,26 @@ Due to the large size of the full dataset (6.5 GB), this project is deployed wit
 
 1.  **Clone this repository:**
     ```bash
-    git clone [https://github.com/YOUR_USERNAME/AI-Visual-Search.git](https://github.com/YOUR_USERNAME/AI-Visual-Search.git)
+    git clone [https://github.com/DeepMistry17/AI-Visual-Search.git](https://github.com/DeepMistry17/AI-Visual-Search.git)
     cd AI-Visual-Search
     ```
 
 2.  **Download the Dataset:**
     * Download the merged dataset from Kaggle: [**Stanford Cars & Food-101 Merged Dataset**](https://www.kaggle.com/datasets/deep1705/stanford-cars-and-food-101-merged-dataset)
-    * Unzip it and place the `dataset` folder in the root directory.
+    * Unzip it. Ensure the folder named `dataset` (containing `train` and `test`) is inside the project root.
 
-3.  **Run the App:**
+3.  **Generate the Local Index:**
+    * Run the indexing script to scan the images and build the vector database on your machine:
+    ```bash
+    python 5_create_index_v2.py
+    ```
+    *(Note: This may take a few minutes as it processes 33,000 images).*
+
+4.  **Run the App:**
     ```bash
     streamlit run 6_app_v2.py
     ```
-    *The app automatically detects the full dataset and switches to "Pro Mode".*
+    *The app will automatically detect the full dataset and switch to "Pro Mode".*
 
 ---
 
@@ -72,30 +84,4 @@ We used **t-SNE** to project the 128D embeddings into 2D. As seen below, the mod
 * `mini_index.pkl`: The lightweight vector database for the online demo.
 * `app_images/`: The small folder of images for the online demo.
 * `_3_model.py`: Model architecture definition.
-
-### 🔴 Mode 2: Full Version (Pro Version)
-**Best for:** Deep evaluation of all 297 classes.
-* To test the model's full capacity on all 33,000+ test images:
-
-1.  **Clone this repository:**
-    ```bash
-    git clone [https://github.com/YOUR_USERNAME/AI-Visual-Search.git](https://github.com/YOUR_USERNAME/AI-Visual-Search.git)
-    cd AI-Visual-Search
-    ```
-
-2.  **Download the Dataset:**
-    * Download the merged dataset from Kaggle: [**Stanford Cars & Food-101 Merged Dataset**](https://www.kaggle.com/datasets/deep1705/stanford-cars-and-food-101-merged-dataset)
-    * Unzip it. Ensure the folder named `dataset` (containing `train` and `test`) is inside the project root.
-
-3.  **Generate the Local Index:**
-    * Run the indexing script to scan the images and build the vector database on your machine:
-    ```bash
-    python 5_create_index_v2.py
-    ```
-    *(Note: This may take a few minutes as it processes 33,000 images).*
-
-4.  **Run the App:**
-    ```bash
-    streamlit run 6_app_v2.py
-    ```
-    *The app will now detect the full dataset and switch to "Pro Mode".*
+* `5_create_index_v2.py`: Script to generate the index for Pro Mode.
