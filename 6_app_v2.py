@@ -10,6 +10,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 st.set_page_config(page_title="AI Visual Search", layout="wide")
 
 # --- 2. DEFINE CUSTOM FUNCTIONS ---
+# Fixes the 'axis' error
 def l2_normalize(x, axis=1):
     return tf.nn.l2_normalize(x, axis=axis)
 
@@ -56,10 +57,25 @@ def main():
     if model is None or df is None:
         st.stop()
 
+    # --- MODE INFO BOX ---
     if mode == "LITE":
-        st.warning(f"⚠️ **DEMO MODE:** Searching {len(df)} images (25 popular classes).")
+        # Smartly get the list of classes actually in the index
+        available_classes = sorted(df['label'].unique())
+        class_list_str = ", ".join(available_classes)
+        
+        st.warning(
+            f"""
+            ⚠️ **DEMO MODE ACTIVE**
+            
+            Searching a curated subset of **{len(available_classes)} Popular Classes** due to cloud hosting limits.
+            
+            **Available Classes:** {class_list_str}
+            
+            *(To search all 297 classes, please clone the repo and run locally).*
+            """
+        )
     else:
-        st.success(f"✅ **PRO MODE:** Searching {len(df)} images (297 classes).")
+        st.success(f"✅ **PRO MODE ACTIVE:** Searching full database ({len(df['label'].unique())} Classes).")
 
     uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
 
@@ -105,23 +121,28 @@ def main():
                     score = similarities[0][idx]
                     
                     with cols[i]:
-                        # --- CRITICAL PATH FIX ---
+                        # --- ROBUST PATH LOGIC ---
+                        display_path = old_path
+                        
                         if mode == "LITE":
-                            # In Cloud Mode, IGNORE the old path folder structure.
-                            # Just look for the filename inside 'app_images'
+                            # Force look inside app_images
                             filename = os.path.basename(old_path)
                             display_path = os.path.join("app_images", filename)
-                        else:
-                            # In Pro Mode, use the full path
-                            display_path = old_path
                         
-                        # --- DEBUG & DISPLAY ---
+                        # Debug check
                         if os.path.exists(display_path):
                             st.image(display_path, caption=f"{label}\n({score:.2f})")
                         else:
-                            # Show error only if file is truly missing
-                            st.error(f"Missing Image")
-                            # st.caption(f"Debug: {display_path}") # Uncomment to see where it looked
+                            # If exact match fails, try looking for just the filename in app_images directory
+                            # This catches issues where folder separators might be different (\ vs /)
+                            if mode == "LITE":
+                                fallback_path = f"app_images/{filename}"
+                                if os.path.exists(fallback_path):
+                                    st.image(fallback_path, caption=f"{label}\n({score:.2f})")
+                                else:
+                                    st.error(f"Image Missing")
+                            else:
+                                st.error(f"Image Missing")
 
             except Exception as e:
                 st.error(f"Prediction Error: {e}")
